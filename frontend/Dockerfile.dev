@@ -1,0 +1,21 @@
+FROM node:22.17.0-alpine
+
+RUN apk add --no-cache \
+        zsh \
+        curl \
+        git
+
+RUN npm install -g pnpm
+
+# 安裝 oh-my-zsh 並啟用外掛
+RUN sh -c "$(curl -fsSL https://github.com/deluan/zsh-in-docker/releases/latest/download/zsh-in-docker.sh)" -- \
+        -p git -p 'zsh-autosuggestions' -p 'zsh-syntax-highlighting' \
+        -t robbyrussell
+
+RUN git clone https://github.com/zsh-users/zsh-autosuggestions \
+        ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions \
+    && git clone https://github.com/zsh-users/zsh-syntax-highlighting.git \
+        ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+
+EXPOSE 3000
+
