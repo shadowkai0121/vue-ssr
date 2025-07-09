@@ -1,0 +1,23 @@
+FROM nginx:stable-alpine
+
+RUN sh -c "$(curl -fsSL https://github.com/deluan/zsh-in-docker/releases/latest/download/zsh-in-docker.sh)" -- \
+        -p git -p 'zsh-autosuggestions' -p 'zsh-syntax-highlighting' \
+        -t robbyrussell
+
+RUN git clone https://github.com/zsh-users/zsh-autosuggestions \
+        ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions \
+    && git clone https://github.com/zsh-users/zsh-syntax-highlighting.git \
+        ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+
+COPY config/nginx.conf /etc/nginx/nginx.conf
+COPY config/conf.d /etc/nginx/conf.d
+COPY config/ssl /etc/nginx/ssl
+COPY config/mime.types /etc/nginx/mime.types
+COPY config/fastcgi.conf /etc/nginx/fastcgi.conf
+COPY config/fastcgi_params /etc/nginx/fastcgi_params
+COPY config/scgi_params /etc/nginx/scgi_params
+COPY config/uwsgi_params /etc/nginx/uwsgi_params
+
+CMD [ "nginx" ]
+
+EXPOSE 80 81 443
