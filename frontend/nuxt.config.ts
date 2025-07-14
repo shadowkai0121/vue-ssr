@@ -7,5 +7,9 @@ export default defineNuxtConfig({
     plugins: [
       import('@tailwindcss/vite').then(m => m.default()),
     ],
+    server: {
+      host: true,
+      allowedHosts: ['frontend'],
+    }
   },
 })
